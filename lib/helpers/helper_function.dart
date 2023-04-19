@@ -10,6 +10,20 @@ class HelperFunction {
 
 
   // Saving the data from SharedPreferences
+  static Future<bool> saveUserLoggedInStatus(bool isUserLoggedIn) async {
+    SharedPreferences sf = await SharedPreferences.getInstance();
+    return sf.setBool(userLoggedInKey, isUserLoggedIn);
+  }
+
+  static Future<bool> saveUserNameSP(String userName) async {
+    SharedPreferences sf = await SharedPreferences.getInstance();
+    return sf.setString(userLoggedInKey, userName);
+  }
+
+  static Future<bool> saveUserEmailSP(String userEmail) async {
+    SharedPreferences sf = await SharedPreferences.getInstance();
+    return sf.setString(userLoggedInKey, userEmail);
+  }
 
 
   // Getting the data from SharedPreferences
