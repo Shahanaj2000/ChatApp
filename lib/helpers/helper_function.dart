@@ -17,12 +17,12 @@ class HelperFunction {
 
   static Future<bool> saveUserNameSP(String userName) async {
     SharedPreferences sf = await SharedPreferences.getInstance();
-    return sf.setString(userLoggedInKey, userName);
+    return sf.setString(userNameKey, userName);
   }
 
   static Future<bool> saveUserEmailSP(String userEmail) async {
     SharedPreferences sf = await SharedPreferences.getInstance();
-    return sf.setString(userLoggedInKey, userEmail);
+    return sf.setString(userEmailKey, userEmail);
   }
 
 
