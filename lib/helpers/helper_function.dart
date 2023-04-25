@@ -33,4 +33,16 @@ class HelperFunction {
     return sf.getBool(userLoggedInKey);
   }
 
+  static Future<String?> getUserEmailFormSF() async {
+    SharedPreferences sf = await SharedPreferences.getInstance();
+    return sf.getString(userEmailKey);
+  }
+
+  static Future<String?> getUserNameFormSF() async {
+    SharedPreferences sf = await SharedPreferences.getInstance();
+    return sf.getString(userNameKey);
+  }
+
+  
+
 }
