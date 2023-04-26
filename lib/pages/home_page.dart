@@ -3,7 +3,9 @@ import 'package:chatappfirebase/pages/auth/login_page.dart';
 import 'package:chatappfirebase/pages/profile_page.dart';
 import 'package:chatappfirebase/pages/search_page.dart';
 import 'package:chatappfirebase/services/auth_services.dart';
+import 'package:chatappfirebase/services/database_services.dart';
 import 'package:chatappfirebase/widgets/textform_widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,6 +19,9 @@ class _HomePageState extends State<HomePage> {
   String userName = "";
   String email = "";
   AuthServices authServices = AuthServices();
+  Stream? groups;
+  bool _isLoading = false;
+  String groupName = "";
 
   @override
   void initState() {
@@ -33,6 +38,15 @@ class _HomePageState extends State<HomePage> {
     await HelperFunction.getUserNameFormSF().then((val) {
       setState(() {
         userName = val!;
+      });
+    });
+
+    // get list of snapshorts in our stream
+    await DatabaseServices(uid: FirebaseAuth.instance.currentUser!.uid)
+        .getUserGroups()
+        .then((snapshot) {
+      setState(() {
+        groups = snapshot;
       });
     });
   }
@@ -99,7 +113,13 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               onTap: () {
-                nextScreenReplace(context,  ProfilePage(userName: userName, email: email,),);
+                nextScreenReplace(
+                  context,
+                  ProfilePage(
+                    userName: userName,
+                    email: email,
+                  ),
+                );
               },
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
@@ -115,7 +135,6 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               onTap: () async {
                 showDialog(
-                  
                   barrierDismissible: false,
                   context: context,
                   builder: (context) {
@@ -132,11 +151,13 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.red,
                           ),
                         ),
-
                         IconButton(
-                          onPressed: () async{
+                          onPressed: () async {
                             await authServices.signOut();
-                            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginPage()),
+                                (route) => false);
                           },
                           icon: const Icon(
                             Icons.done,
@@ -165,6 +186,151 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      body: groupList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          popUpDialog(context);
+        },
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 30,
+        ),
+      ),
+    );
+  }
+
+  groupList() {
+    return StreamBuilder(
+      stream: groups,
+      builder: (context, AsyncSnapshot snapshot) {
+        // makes some checks
+        if (snapshot.hasData) {
+          if (snapshot.data['groups'] != null) {
+            if (snapshot.data['groups'].length != 0) {
+              return Text("Hello");
+            } else {
+              return noGroupWidget();
+            }
+          } else {
+            return noGroupWidget();
+          }
+        } else {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  noGroupWidget() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          InkWell(
+            onTap: () {
+              popUpDialog(context);
+            },
+            child: Icon(
+              Icons.add_circle_outline,
+              color: Colors.grey[700],
+              size: 75,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            "You've not joined any groups, tap on the add icon to create a group or also search from top search button",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  popUpDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Create a group",
+            textAlign: TextAlign.left,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _isLoading == true
+                  ? CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    )
+                  : TextField(
+                      onChanged: (val) {
+                        setState(() {
+                          groupName = val;
+                        });
+                      },
+                      style: const TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          borderRadius: BorderRadius.circular(17),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.red,
+                          ),
+                          borderRadius: BorderRadius.circular(17),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          borderRadius: BorderRadius.circular(17),
+                        ),
+                      ),
+                    ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).primaryColor,
+              ),
+              child: const Text("CANCEL"),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).primaryColor,
+              ),
+              child: const Text("CREATE"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
