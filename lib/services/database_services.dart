@@ -73,4 +73,29 @@ class DatabaseServices {
     DocumentSnapshot documentSnapshot = await d.get();
     return documentSnapshot['admin'];
   }
+
+  // get group members
+  getGroupMembers(groupId) async {
+    return groupCollections.doc(groupId).snapshots();
+  }
+
+  //search
+  searchByName(String groupName) {
+    return groupCollections.where("groupName", isEqualTo: groupName).get();
+  }
+
+  // function -> bool
+  // function -> bool
+  Future<bool> isUserJoined(
+      String groupName, String groupId, String userName) async {
+    DocumentReference userDocumentReference = usersCollections.doc(uid);
+    DocumentSnapshot documentSnapshot = await userDocumentReference.get();
+
+    List<dynamic> groups = await documentSnapshot['groups'];
+    if (groups.contains("${groupId}_$groupName")) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
