@@ -39,16 +39,16 @@ class DatabaseServices {
     DocumentReference groupDocumentReference = await groupCollections.add({
       "groupName": groupName,
       "groupIcon": "",
-      "groupId": "",
       "admin": "${id}_$userName",
       "members": [],
-      "resendMessage": "",
-      "resentMessageSender": "",
+      "groupId": "",
+      "recentMessage": "",
+      "recentMessageSender": "",
     });
 
     // update the member
     await groupDocumentReference.update({
-      "memebers": FieldValue.arrayUnion(["${uid}_$userName"]),
+      "members": FieldValue.arrayUnion(["${uid}_$userName"]),
       "groupId": groupDocumentReference.id,
     });
 
@@ -79,7 +79,7 @@ class DatabaseServices {
     return groupCollections.doc(groupId).snapshots();
   }
 
-  //search
+  // search
   searchByName(String groupName) {
     return groupCollections.where("groupName", isEqualTo: groupName).get();
   }
@@ -97,5 +97,31 @@ class DatabaseServices {
     } else {
       return false;
     }
+  }
+
+  // toggling the group join/exit
+  Future toggleGroupJoin(String groupId, String userName, String groupName) async {
+    DocumentReference userDocumentReference = usersCollections.doc(uid);
+    DocumentReference groupDocumentReference = usersCollections.doc(groupId);
+    DocumentSnapshot documentSnapshot = await userDocumentReference.get();
+    List<dynamic> groups = await documentSnapshot['groups'];
+
+    // if user has our groups -> then remove then or also in other part rejoin
+    if (groups.contains("${groupId}_$groupName")) {
+      await userDocumentReference.update({
+        "groups": FieldValue.arrayRemove(["${groupId}_$groupName"])
+      });
+      await groupDocumentReference.update({
+        "members": FieldValue.arrayRemove(["${uid}_$userName"])
+      });
+    } else {
+       await userDocumentReference.update({
+        "groups": FieldValue.arrayUnion(["${groupId}_$groupName"])
+      });
+      await groupDocumentReference.update({
+        "members": FieldValue.arrayUnion(["${uid}_$userName"])
+      });
+    }
+
   }
 }

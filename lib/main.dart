@@ -66,6 +66,8 @@ class _MyAppState extends State<MyApp> {
         primaryColor: Constants.primaryColor,
         scaffoldBackgroundColor: Colors.white,
       ),
+      // theme: ThemeData.light(),
+      // darkTheme: ThemeData.dark(),
       home: _isSignedIn ?  const HomePage() : const LoginPage(),
     );
   }
