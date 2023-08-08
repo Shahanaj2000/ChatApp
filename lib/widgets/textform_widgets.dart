@@ -1,4 +1,4 @@
-import 'package:chatappfirebase/shared/constants.dart';
+
 import 'package:flutter/material.dart';
 
 const textInputDecoration = InputDecoration(
@@ -6,14 +6,14 @@ const textInputDecoration = InputDecoration(
 
   // when we focused
   focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Color(0xFFee7b64), width: 2)),
+      borderSide: BorderSide(color: Color.fromARGB(255, 0, 102, 0), width: 2)),
 
   // when we are not focused
   enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Color(0xFFee7b64), width: 2)),
+      borderSide: BorderSide(color: Color.fromARGB(255, 0, 102, 0), width: 2)),
   // error
   errorBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Color(0xFFee7b64), width: 2)),
+      borderSide: BorderSide(color: Color.fromARGB(255, 0, 102, 0), width: 2)),
 );
 
 // Navigate to next page

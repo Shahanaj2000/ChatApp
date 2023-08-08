@@ -10,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -66,8 +67,9 @@ class _LoginPageState extends State<LoginPage> {
                               fontWeight: FontWeight.w300,
                               color: Colors.grey),
                         ),
-                        Image.asset(
-                            "/home/ubantu/chatappfirebase/assets/login.png"),
+                        // Image.asset(
+                        //     "/home/ubantu/chatappfirebase/assets/login.png"),
+                        Lottie.network("https://assets3.lottiefiles.com/packages/lf20_sop8cbmc.json"),
                         TextFormField(
                           decoration: textInputDecoration.copyWith(
                             labelText: 'Email',

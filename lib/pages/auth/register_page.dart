@@ -5,6 +5,7 @@ import 'package:chatappfirebase/services/auth_services.dart';
 import 'package:chatappfirebase/widgets/textform_widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -60,8 +61,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               fontWeight: FontWeight.w300,
                               color: Colors.grey),
                         ),
-                        Image.asset(
-                            "/home/ubantu/chatappfirebase/assets/register.png"),
+                        // Image.asset(
+                        //     "/home/ubantu/chatappfirebase/assets/register.png"),
+                        Lottie.network("https://assets1.lottiefiles.com/packages/lf20_xlmz9xwm.json"),
                         TextFormField(
                           decoration: textInputDecoration.copyWith(
                             labelText: 'FullName',

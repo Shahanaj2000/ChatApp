@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
               userName,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.red),
+                  fontWeight: FontWeight.bold, color: Colors.black),
             ),
             const SizedBox(
               height: 30,
